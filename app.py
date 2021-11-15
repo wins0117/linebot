@@ -14,7 +14,6 @@ app = Flask(__name__)
 line_bot_api = LineBotApi('+Cdo+dZUSKFI5th0SIfse1WkOl5WtRTpz64ivM0sZQ6CsqlRDDiFR96SbcLJ3S8W8vBsVijiuBsRU0v95aBqHNYeaC334mv2en1j++k0wmMV/B+w5oON8SQdV9F83iOS+sXJBsAxf2ntGThpA2Y8IwdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
 handler = WebhookHandler('5ff724a21c5de4e1bbe7f8d62ba50e9e')
-
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -63,7 +62,7 @@ def handle_message(event):
         line_bot_api.reply_message(event.reply_token, message)
 
     else:
-    	message = TextSendMessage(text= msg)
+    	message = TextSendMessage(text='請輸入hi')
     	line_bot_api.reply_message(event.reply_token, message)
 
 
