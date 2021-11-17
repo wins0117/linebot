@@ -20,7 +20,7 @@ handler = WebhookHandler('23e167e4c67bf8f9a4fc69c2c79e47e4')
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
 def callback():
-    signature = request.headers['X-Line-Signature']
+    signature = request.headers['x-line-signature']
 
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
