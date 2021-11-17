@@ -11,34 +11,60 @@ from linebot.models import *
 
 app = Flask(__name__)
 # Channel Access Token
-line_bot_api = LineBotApi('rfScBFZseIDnZN6lxa7+V4QtEKRBJVM2xl8HdkrXmSarCkq7RCUcgL3kFmLdrqUE8vBsVijiuBsRU0v95aBqHNYeaC334mv2en1j++k0wmNk1M65CvdaKZOodtVehNYcfk5dl7GbRTio0KjQacSqUAdB04t89/1O/w1cDnyilFU=')
+line_bot_api = LineBotApi('+CFSbCUaF870PMDFYRbzM6Bi8fisS4TsF03mKtP7/mbrvTUze/ySZYkvZNGhAWew8vBsVijiuBsRU0v95aBqHNYeaC334mv2en1j++k0wmOKk7k/ff+mx56n6q75LAxydIwSSiq/1dV+vnBaTAfE/AdB04t89/1O/w1cDnyilFU=')
 # Channel Secret
 handler = WebhookHandler('23e167e4c67bf8f9a4fc69c2c79e47e4')
 
-
 # 監聽所有來自 /callback 的 Post Request
-# 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
 def callback():
-    signature = request.headers['x-line-signature']
-
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+    # get request body as text
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-
+    # handle webhook body
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
-
     return 'OK'
 
-# 學你說話
+# 處理訊息 
+
 @handler.add(MessageEvent, message=TextMessage)
-def echo(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text)
-    )
+def handle_message(event):
+    msg = event.message.text.lower()
+
+    if msg == 'hi':
+        message = TemplateSendMessage(
+        alt_text='Buttons template',
+        template=ButtonsTemplate(
+        thumbnail_image_url='https://i0.wp.com/www.womstation.com/wp-content/uploads/2018/11/%E9%9F%93%E5%9C%8B4.png?w=1280&ssl=1',
+        title='第一個小功能',
+        text='測試雞肋功能',
+        actions=[
+            URITemplateAction(
+                label='熱門youtube',
+                uri='https://www.youtube.com/feed/trending'
+            ),
+            URITemplateAction(
+                label='小新聞',
+                uri='https://news.google.com/?hl=zh-TW&tab=wn1&gl=TW&ceid=TW:zh-Hant'
+            ),
+            URITemplateAction(
+                label='IGIG',
+                uri='https://www.instagram.com/?hl=zh-tw'
+            ),
+
+            ]
+            )
+        )
+        line_bot_api.reply_message(event.reply_token, message)
+
+    else:
+    	message = TextSendMessage(text='請輸入hi')
+    	line_bot_api.reply_message(event.reply_token, message)
 
 
 
